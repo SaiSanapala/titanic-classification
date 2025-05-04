@@ -1,0 +1,104 @@
+R version 4.4.2 (2024-10-31) -- "Pile of Leaves"
+Copyright (C) 2024 The R Foundation for Statistical Computing
+Platform: aarch64-apple-darwin20
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Workspace loaded from ~/.RData]
+
+> setwd("/Users/sailikhiths/Documents/College Course Files/Data101 - Spring 2025")
+> 
+> 
+> titanic <- read.csv("Titanic-Dataset.csv", stringsAsFactors = TRUE)
+> head(titanic)
+  PassengerId Survived Pclass
+1           1        0      3
+2           2        1      1
+3           3        1      3
+4           4        1      1
+5           5        0      3
+6           6        0      3
+                                                 Name    Sex Age SibSp Parch
+1                             Braund, Mr. Owen Harris   male  22     1     0
+2 Cumings, Mrs. John Bradley (Florence Briggs Thayer) female  38     1     0
+3                              Heikkinen, Miss. Laina female  26     0     0
+4        Futrelle, Mrs. Jacques Heath (Lily May Peel) female  35     1     0
+5                            Allen, Mr. William Henry   male  35     0     0
+6                                    Moran, Mr. James   male  NA     0     0
+            Ticket    Fare Cabin Embarked
+1        A/5 21171  7.2500              S
+2         PC 17599 71.2833   C85        C
+3 STON/O2. 3101282  7.9250              S
+4           113803 53.1000  C123        S
+5           373450  8.0500              S
+6           330877  8.4583              Q
+> str(titanic)
+'data.frame':	891 obs. of  12 variables:
+ $ PassengerId: int  1 2 3 4 5 6 7 8 9 10 ...
+ $ Survived   : int  0 1 1 1 0 0 0 0 1 1 ...
+ $ Pclass     : int  3 1 3 1 3 3 1 3 3 2 ...
+ $ Name       : Factor w/ 891 levels "Abbing, Mr. Anthony",..: 109 191 358 277 16 559 520 629 417 581 ...
+ $ Sex        : Factor w/ 2 levels "female","male": 2 1 1 1 2 2 2 2 1 1 ...
+ $ Age        : num  22 38 26 35 35 NA 54 2 27 14 ...
+ $ SibSp      : int  1 1 0 1 0 0 0 3 0 1 ...
+ $ Parch      : int  0 0 0 0 0 0 0 1 2 0 ...
+ $ Ticket     : Factor w/ 681 levels "110152","110413",..: 524 597 670 50 473 276 86 396 345 133 ...
+ $ Fare       : num  7.25 71.28 7.92 53.1 8.05 ...
+ $ Cabin      : Factor w/ 148 levels "","A10","A14",..: 1 83 1 57 1 1 131 1 1 1 ...
+ $ Embarked   : Factor w/ 4 levels "","C","Q","S": 4 2 4 4 4 3 4 4 4 2 ...
+> 
+> titanic <- titanic[, c("Survived", "Pclass", "Sex", "Age", "SibSp", "Parch", "Fare", "Embarked")]
+> titanic$Age[is.na(titanic$Age)] <- median(titanic$Age, na.rm = TRUE)
+> titanic <- titanic[!is.na(titanic$Embarked), ]
+> 
+> titanic$Survived <- as.factor(titanic$Survived)
+> titanic$Pclass <- as.factor(titanic$Pclass)
+> titanic$Sex <- as.factor(titanic$Sex)
+> titanic$Embarked <- as.factor(titanic$Embarked)
+> 
+> set.seed(42)
+> split <- sample(1:nrow(titanic), 0.7 * nrow(titanic))
+> train <- titanic[split, ]
+> test <- titanic[-split, ]
+> 
+> library(rpart)
+> library(rpart.plot)
+> tree_model <- rpart(Survived ~ ., data=train, method="class")
+> rpart.plot(tree_model)
+> pred_tree <- predict(tree_model, test, type="class")
+> conf_matrix_tree <- table(Predicted = pred_tree, Actual = test$Survived)
+> print(conf_matrix_tree)
+         Actual
+Predicted   0   1
+        0 150  45
+        1   8  65
+> 
+> library(e1071)
+> nb_model <- naiveBayes(Survived ~ ., data=train)
+> pred_nb <- predict(nb_model, test)
+> conf_matrix_nb <- table(Predicted = pred_nb, Actual = test$Survived)
+> print(conf_matrix_nb)
+         Actual
+Predicted   0   1
+        0 138  48
+        1  20  62
+> 
+> acc_tree <- mean(pred_tree == test$Survived)
+> acc_nb <- mean(pred_nb == test$Survived)
+> print(paste("Decision Tree Accuracy:", acc_tree))
+[1] "Decision Tree Accuracy: 0.802238805970149"
+> print(paste("Naive Bayes Accuracy:", acc_nb))
+[1] "Naive Bayes Accuracy: 0.746268656716418"
+> 
