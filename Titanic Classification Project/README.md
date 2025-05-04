@@ -1,4 +1,4 @@
-# 🚢 Titanic Survival Prediction – Data 101 Project
+# 🚢 Titanic Survival Prediction
 
 This project uses the classic **Titanic dataset** to predict passenger survival using two machine learning models in R:
 
