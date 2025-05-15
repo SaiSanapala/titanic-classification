@@ -1,4 +1,4 @@
-# 🚢 Titanic Survival Prediction
+# Titanic Survival Prediction
 
 This project uses the classic **Titanic dataset** to predict passenger survival using two machine learning models in R:
 
@@ -7,7 +7,7 @@ This project uses the classic **Titanic dataset** to predict passenger survival 
 
 ---
 
-## 📊 Project Summary
+## Project Summary
 
 The goal was to clean and preprocess the Titanic dataset, apply classification models, and compare their predictive performance using confusion matrices and accuracy scores.
 
@@ -16,7 +16,7 @@ The goal was to clean and preprocess the Titanic dataset, apply classification m
 
 ---
 
-## 🧠 Methodology
+## Methodology
 
 ### 1. Preprocessing
 
@@ -44,6 +44,6 @@ Evaluated both models using:
 
 ---
 
-## 📈 Results
+## Results
 
 ### Decision Tree
